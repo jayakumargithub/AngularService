@@ -1,9 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import {HttpModule} from '@angular/http';
 import { AppComponent } from './app.component';
 import { PostsComponent } from './posts/posts.component';
 import { PostService } from './services/post.service';
+import { AppExceptionHandler } from './common/app-exception-handler';
 
 
 
@@ -17,7 +18,8 @@ import { PostService } from './services/post.service';
     HttpModule
   ],
   providers: [
-  PostService
+  PostService,
+  {provide:ErrorHandler, useClass:AppExceptionHandler}
   ],
   bootstrap: [AppComponent]
 })
