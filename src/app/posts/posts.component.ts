@@ -7,14 +7,18 @@ import { Http } from '@angular/http';
   styleUrls: ['./posts.component.css']
 })
 
-export class PostsComponent {
+export class PostsComponent  implements OnInit{
+
+  ngOnInit(): void {
+    this.http.get(this.url)
+    .subscribe(response => {
+      this.posts = response.json();
+    });
+  }
   posts: any[];
   private url = 'http://jsonplaceholder.typicode.com/posts'
   constructor(private http: Http) {
-    http.get(this.url)
-      .subscribe(response => {
-        this.posts = response.json();
-      });
+   
   }
 
   createPost(input: HTMLInputElement) {
@@ -33,4 +37,13 @@ export class PostsComponent {
         console.log(response.json());
       })
   }
+
+  deletePost(post){
+    this.http.delete(this.url + '/' + post.id)
+    .subscribe(response => {
+      let index = this.posts.indexOf(post);
+      this.posts.splice(index,1);
+    })
+  }
+  
 }
