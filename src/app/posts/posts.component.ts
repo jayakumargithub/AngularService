@@ -15,10 +15,8 @@ import { BadInput } from '../common/bad-input';
 export class PostsComponent implements OnInit {
 
   ngOnInit(): void {
-    this.service.getPosts()
-      .subscribe(response => {
-        this.posts = response.json();
-      });
+    this.service.getAll()
+      .subscribe(posts => this.posts = posts); //must use 'map' for this
   }
   posts: any[];
 
@@ -29,9 +27,9 @@ export class PostsComponent implements OnInit {
   createPost(input: HTMLInputElement) {
     let post = { title: input.value }
     input.value = '';
-    this.service.createPost((post))
-      .subscribe(response => {
-        post['id]'] = response.json().id;
+    this.service.create((post))
+      .subscribe(newPost => {
+        post['id]'] = newPost.id;
         this.posts.splice(0, 0, post);
       }, (error: AppError) => {
         if (error instanceof BadInput) {
@@ -44,19 +42,20 @@ export class PostsComponent implements OnInit {
   }
 
   updatePost(post) {
-    this.service.updatePost(post)
-      .subscribe(response => {
-        console.log(response.json()); 
+    this.service.update(post)
+      .subscribe(updatedPost => {
+        console.log(updatedPost); 
       });
 
   }
 
   deletePost(post) {
-    this.service.deletePost(post.id)
-      .subscribe(response => {
+    this.service.delete(post.id)
+      .subscribe(() => {
         let index = this.posts.indexOf(post);
         this.posts.splice(index, 1);
-      }, (error: AppError) => {
+      }, 
+      (error: AppError) => {
         if (error instanceof NotFoundError)
           alert('This post has already been deleted.')
         else {
